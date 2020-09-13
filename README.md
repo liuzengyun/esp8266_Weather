@@ -36,5 +36,4 @@
 |   15   | SS (SPI)             |        0V        | Pull-up resistor not usable                                  |
 |   16   | Wake up from sleep   |        -         | No pull-up resistor, but pull-down instead Should be connected to RST to wake up |
 
-## 原理解析
 
