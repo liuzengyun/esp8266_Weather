@@ -83,24 +83,27 @@ void httpRequest(String reqRes){
   client.stop(); 
 }
  
-// 连接WiFi
 void connectWiFi(){
-  WiFi.begin(ssid, password);                  // 启动网络连接
-  Serial.print("Connecting to ");              // 串口监视器输出网络连接信息
-  Serial.print(ssid); Serial.println(" ...");  // 告知用户NodeMCU正在尝试WiFi连接
+  WiFi.begin(ssid, password);
+  Serial.print("Connecting to ");
+  Serial.print(ssid); Serial.println(" ...");
   
-  int i = 0;                                   // 这一段程序语句用于检查WiFi是否连接成功
-  while (WiFi.status() != WL_CONNECTED) {      // WiFi.status()函数的返回值是由NodeMCU的WiFi连接状态所决定的。 
-    delay(1000);                               // 如果WiFi连接成功则返回值为WL_CONNECTED                       
-    Serial.print(i++); Serial.print(' ');      // 此处通过While循环让NodeMCU每隔一秒钟检查一次WiFi.status()函数返回值
-  }                                            // 同时NodeMCU将通过串口监视器输出连接时长读秒。
-                                               // 这个读秒是通过变量i每隔一秒自加1来实现的。                                              
-  Serial.println("");                          // WiFi连接成功后
-  Serial.println("Connection established!");   // NodeMCU将通过串口监视器输出"连接成功"信息。
-  Serial.print("IP address:    ");             // 同时还将输出NodeMCU的IP地址。这一功能是通过调用
-  Serial.println(WiFi.localIP());              // WiFi.localIP()函数来实现的。该函数的返回值即NodeMCU的IP地址。  
-}
- 
+  int i = 0;
+  int timeout = 30; // Timeout after 30 seconds
+  while (WiFi.status() != WL_CONNECTED && i < timeout) {      
+    delay(1000);                       
+    Serial.print(i++); Serial.print(' ');      
+  }                                            
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("");
+    Serial.println("Connection established!");   
+    Serial.print("IP address:    ");             
+    Serial.println(WiFi.localIP());              
+  } else {
+    Serial.println("");
+    Serial.println("Connection failed!");
+  }
+} 
 // 利用ArduinoJson库解析心知天气响应信息
 void parseInfo(WiFiClient client){
   const size_t capacity = JSON_ARRAY_SIZE(1) + JSON_OBJECT_SIZE(1) + 2*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(6) + 230;
